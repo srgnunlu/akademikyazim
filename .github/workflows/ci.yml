@@ -1,0 +1,145 @@
+name: TezAtlas CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Job 1: Skill Graph Integrity
+  # ─────────────────────────────────────────────
+  skill-graph:
+    name: Skill Graph Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: pip install pyyaml pytest
+
+      - name: Run skill graph tests
+        run: pytest tests/test_skill_graph.py -v
+
+  # ─────────────────────────────────────────────
+  # Job 2: Frontmatter Schema Validation
+  # ─────────────────────────────────────────────
+  frontmatter:
+    name: Frontmatter Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: pip install pyyaml pytest
+
+      - name: Run frontmatter tests
+        run: pytest tests/test_frontmatter.py -v
+
+  # ─────────────────────────────────────────────
+  # Job 3: Phase Chain Continuity
+  # ─────────────────────────────────────────────
+  phase-chain:
+    name: Phase Chain Continuity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: pip install pyyaml pytest
+
+      - name: Run phase chain tests
+        run: pytest tests/test_phase_chain.py -v
+
+  # ─────────────────────────────────────────────
+  # Job 4: OCR Pipeline Smoke Test
+  # ─────────────────────────────────────────────
+  ocr-pipeline:
+    name: OCR Pipeline Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install OCR dependencies
+        run: pip install pymupdf pytest
+
+      - name: Run OCR pipeline tests
+        run: pytest tests/test_ocr_pipeline.py -v
+
+  # ─────────────────────────────────────────────
+  # Job 5: Agents Module Tests
+  # ─────────────────────────────────────────────
+  agents-module:
+    name: Agents Module Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install agent dependencies
+        run: pip install openai anthropic pyyaml python-dotenv pymupdf pytest pytest-asyncio
+
+      - name: Run agents tests
+        run: pytest tests/test_agents.py -v
+        env:
+          # No real API keys in CI — tests use mocks
+          GEMINI_API_KEY: "ci-test-key"
+          DEEPSEEK_API_KEY: "ci-test-key"
+
+  # ─────────────────────────────────────────────
+  # Job 6: YAML Config Validation
+  # ─────────────────────────────────────────────
+  yaml-config:
+    name: YAML Config Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install yaml
+        run: pip install pyyaml
+
+      - name: Validate agents.yaml
+        run: |
+          python3 -c "
+          import yaml, sys
+          with open('agents.yaml') as f:
+              cfg = yaml.safe_load(f)
+          assert 'providers' in cfg, 'Missing providers section'
+          assert 'agents' in cfg, 'Missing agents section'
+          assert 'defaults' in cfg, 'Missing defaults section'
+          print('agents.yaml: OK')
+          for name, agent in cfg['agents'].items():
+              assert 'provider' in agent, 'Agent ' + name + ' missing provider'
+              print('  agent [' + name + ']: OK')
+          sys.exit(0)
+          "

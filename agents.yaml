@@ -1,0 +1,66 @@
+# TezAtlas Multi-Agent System — Provider & Agent Configuration
+# Edit this file to assign LLM providers to each agent.
+# Any OpenAI-compatible API works: just add base_url + api_key_env + default_model.
+
+providers:
+  gemini:
+    base_url: "https://generativelanguage.googleapis.com/v1beta/openai"
+    api_key_env: "GEMINI_API_KEY"
+    default_model: "gemini-2.0-flash"
+
+  deepseek:
+    base_url: "https://api.deepseek.com/v1"
+    api_key_env: "DEEPSEEK_API_KEY"
+    default_model: "deepseek-chat"
+
+  openai:
+    base_url: "https://api.openai.com/v1"
+    api_key_env: "OPENAI_API_KEY"
+    default_model: "gpt-4o"
+
+  anthropic:
+    type: "anthropic"
+    api_key_env: "ANTHROPIC_API_KEY"
+    default_model: "claude-sonnet-4-20250514"
+
+  grok:
+    base_url: "https://api.x.ai/v1"
+    api_key_env: "GROK_API_KEY"
+    default_model: "grok-3"
+
+  groq:
+    base_url: "https://api.groq.com/openai/v1"
+    api_key_env: "GROQ_API_KEY"
+    default_model: "llama-3.3-70b-versatile"
+
+  ollama:
+    base_url: "http://localhost:11434/v1"
+    api_key_env: "none"
+    default_model: "llama3.2"
+
+  # Add your own provider:
+  # minimax:
+  #   base_url: "https://api.minimax.chat/v1"
+  #   api_key_env: "MINIMAX_API_KEY"
+  #   default_model: "MiniMax-Text-01"
+
+agents:
+  source_hunter:
+    provider: "gemini"
+    model: null                # null = use provider's default_model
+    description: "Searches and evaluates academic sources"
+
+  methodology_checker:
+    provider: "gemini"
+    model: null
+    description: "Validates methodological consistency"
+
+  citation_verifier:
+    provider: "deepseek"
+    model: null
+    description: "Cross-checks citations against source PDFs"
+
+defaults:
+  fallback_provider: "gemini"
+  max_retries: 2
+  timeout: 60

@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "tezatlas"
+version = "1.0.0"
+description = "Agentic AI Workflow Framework for academic writing"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["academic", "writing", "research", "ai", "workflow"]
+
+# Core dependencies — needed for the agents/ module
+dependencies = [
+    "openai>=1.0",
+    "anthropic>=0.40",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+# OCR pipeline: python3 ocr_pipeline.py sources/ --batch
+ocr = [
+    "pymupdf>=1.24",
+    "pytesseract>=0.3.10",
+    "pillow>=10.0",
+]
+
+# Agents module (source hunter, methodology checker, citation verifier)
+# pymupdf is needed for citation verifier PDF parsing
+agents = [
+    "openai>=1.0",
+    "anthropic>=0.40",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+    "pymupdf>=1.24",
+]
+
+# Development: testing, linting, validation
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.23",
+    "pyyaml>=6.0",
+    "pre-commit>=3.0",
+]
+
+# MCP server: academic API tools (Semantic Scholar, OpenAlex, CrossRef)
+mcp = [
+    "mcp>=1.0",
+]
+
+# BibTeX generator: DOI extraction and CrossRef lookup
+bibtex = [
+    "pymupdf>=1.24",
+]
+
+# Install everything
+all = [
+    "tezatlas[ocr,agents,dev,mcp,bibtex]",
+]
+
+[project.scripts]
+tezatlas-agents = "agents.run:main"
+tezatlas-ocr = "ocr_pipeline:main"
+tezatlas-bibtex = "tools.bibtex_generator:main"
+tezatlas-mcp = "mcp_server.server:run_mcp_server"
+
+[tool.setuptools.packages.find]
+include = ["agents*", "mcp_server*", "tools*", "scripts*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+filterwarnings = [
+    "ignore:builtin type Swig.*has no __module__:DeprecationWarning",
+]
+
+[tool.setuptools.package-data]
+"agents" = ["prompts/*.md"]

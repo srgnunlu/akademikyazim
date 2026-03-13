@@ -1,0 +1,74 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# User source files (personal, large)
+sources/*
+!sources/.gitkeep
+!sources/README.md
+*.pdf
+*.epub
+
+# API keys
+.env
+.academiaos/config
+~/.academiaos_config
+
+# Personal project files (user-specific, not framework)
+proje_kimlik.md
+MEMORY.md
+DERSLER.md
+TERMINOLOJI.md
+DURUM_OZETI.md
+KAYNAK_ENVANTERI.md
+SOURCE_MAP.md
+*_notlar.md
+OKUMA_RAPORU.md
+TEZ_ON_SENTEZI.md
+ELEME_LISTESI.md
+
+# Output files
+*.docx
+*.doc
+cikti/
+output/
+
+# Python
+__pycache__/
+*.pyc
+
+# Proje-spesifik çalışma dosyaları
+ELEME_LISTESI.md
+TEZ_ON_SENTEZI.md
+GELISTIRME_ONERILERI_HUKUK.md
+GELISTIRME_ONERILERI.md
+OKUMA_RAPORU.md
+RASPBERRY_TASIMA_KONTROL_LISTESI.md
+konu_kesfi.md
+
+# Hailo / OCR scriptleri (Pi'ye özel)
+hailo_ocr_pipeline.py
+hailo_ocr_test.py
+hailo_rec_debug.py
+tezatlas_bulk.py
+turkish_corrector.py
+ocr_pipeline/
+
+# Kişisel notlar
+notlar/
+
+# Node
+node_modules/
+
+# Logs
+*.log
+website/.next/
+website/node_modules/
+
