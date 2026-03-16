@@ -148,6 +148,35 @@ class TestReadingReportFormat:
 
 # ── Edge cases ────────────────────────────────────────────────────────────────
 
+class TestMedicalScaffolds:
+    def test_medicine_thesis_creates_master_plan(self, tmp_path: Path) -> None:
+        result = _scaffold(tmp_path, doc_type="thesis", field="medicine")
+        assert result.returncode == 0
+        assert (tmp_path / "THESIS_MASTER_PLAN.md").exists()
+        assert (tmp_path / "AJEM_QUICK_GUIDE.md").exists()
+
+    def test_original_article_creates_submission_files(self, tmp_path: Path) -> None:
+        result = _scaffold(tmp_path, doc_type="original-article", field="medicine")
+        assert result.returncode == 0
+        for name in [
+            "MANUSCRIPT.md",
+            "SUBMISSION_PACKAGE.md",
+            "TITLE_PAGE.md",
+            "COVER_LETTER.md",
+            "AUTHOR_CONTRIBUTIONS.md",
+            "ETHICS_AND_DISCLOSURES.md",
+            "AJEM_SUBMISSION_CHECKLIST.md",
+        ]:
+            assert (tmp_path / name).exists(), name
+
+    def test_case_report_creates_case_specific_files(self, tmp_path: Path) -> None:
+        result = _scaffold(tmp_path, doc_type="case-report", field="medicine")
+        assert result.returncode == 0
+        content = (tmp_path / "MANUSCRIPT.md").read_text(encoding="utf-8")
+        assert "Case Presentation" in content
+        assert (tmp_path / "AJEM_SUBMISSION_CHECKLIST.md").exists()
+
+
 class TestEdgeCases:
     def test_title_with_spaces(self, tmp_path: Path) -> None:
         result = _scaffold(tmp_path, title="My Research on Things")

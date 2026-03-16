@@ -1,8 +1,8 @@
 <div align="center">
 
-# TezAtlas
+# AkademikYazım
 
-### Agentic Academic Workflow Framework
+### Academic Writing Workflow Framework
 
 *[tezatlas.com](https://tezatlas.com)*
 
@@ -111,6 +111,16 @@ TezAtlas operates in two modes. In **Research Copilot / Guided Writing** mode (t
 ```bash
 git clone https://github.com/tialkan/tezatlas
 cd tezatlas
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -U pip setuptools wheel
+pip install -e .
+tezatlas --list
+```
+
+For Claude Code-driven usage:
+
+```bash
 claude
 ```
 

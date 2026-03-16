@@ -69,6 +69,10 @@ node_modules/
 
 # Logs
 *.log
+
+# Local validation / scratch
+_demo_project/
+
 website/.next/
 website/node_modules/
 
