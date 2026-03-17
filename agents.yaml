@@ -45,13 +45,14 @@ providers:
   #   default_model: "MiniMax-Text-01"
 
 agents:
+  # ── Existing agents ──────────────────────────────────────────
   source_hunter:
-    provider: "gemini"
-    model: null                # null = use provider's default_model
+    provider: "anthropic"
+    model: null
     description: "Searches and evaluates academic sources"
 
   methodology_checker:
-    provider: "gemini"
+    provider: "anthropic"
     model: null
     description: "Validates methodological consistency"
 
@@ -60,7 +61,43 @@ agents:
     model: null
     description: "Cross-checks citations against source PDFs"
 
+  # ── New advanced agents ──────────────────────────────────────
+  rq_refiner:
+    provider: "anthropic"
+    model: null
+    description: "Transforms vague ideas into structured research questions"
+
+  literature_analyst:
+    provider: "anthropic"
+    model: null
+    description: "Analyzes sources for quality, themes, gaps, contradictions"
+
+  argument_builder:
+    provider: "anthropic"
+    model: null
+    description: "Builds theoretical framework and argument hierarchy"
+
+  draft_writer:
+    provider: "anthropic"
+    model: null
+    description: "Writes source-anchored section drafts with A/B alternatives"
+
+  self_critic:
+    provider: "anthropic"
+    model: null
+    description: "Multi-layer draft review and iterative improvement"
+
+  orchestrator:
+    provider: "anthropic"
+    model: null
+    description: "Master agent coordinating the full idea-to-article pipeline"
+
 defaults:
   fallback_provider: "gemini"
   max_retries: 2
-  timeout: 60
+  timeout: 120
+
+pipeline:
+  autonomy: "balanced"         # maximal | balanced | conservative
+  max_draft_iterations: 3
+  default_document_type: "article"

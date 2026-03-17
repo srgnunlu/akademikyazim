@@ -4,8 +4,33 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Any
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class ToolCall:
+    """Represents a tool call requested by the LLM."""
+
+    id: str
+    name: str
+    arguments: dict[str, Any]
+
+
+@dataclass
+class ChatResponse:
+    """Structured response from chat_with_tools."""
+
+    text: str = ""
+    tool_calls: list[ToolCall] = field(default_factory=list)
+    finish_reason: str = "stop"
+    raw: Any = None
+
+    @property
+    def has_tool_calls(self) -> bool:
+        return len(self.tool_calls) > 0
 
 
 class LLMProvider(ABC):
@@ -46,6 +71,28 @@ class LLMProvider(ABC):
         Returns:
             The assistant's response text.
         """
+
+    async def chat_with_tools(
+        self,
+        messages: list[dict],
+        tools: list[dict],
+        model: str | None = None,
+        temperature: float = 0.3,
+    ) -> ChatResponse:
+        """Send messages with tool definitions and return structured response.
+
+        Args:
+            messages: List of {"role": ..., "content": ...} dicts.
+            tools: Tool definitions (OpenAI function-calling format).
+            model: Model override.
+            temperature: Sampling temperature.
+
+        Returns:
+            ChatResponse with text and/or tool_calls.
+        """
+        # Default implementation: fall back to plain chat (no tool support)
+        text = await self.chat(messages, model, temperature)
+        return ChatResponse(text=text)
 
     @abstractmethod
     async def health_check(self) -> dict:

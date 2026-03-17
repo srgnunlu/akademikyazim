@@ -4,11 +4,12 @@ Covers: OpenAI, Gemini, DeepSeek, Grok, Groq, Together, MiniMax, Ollama,
 and any other provider exposing an OpenAI-compatible chat completions endpoint.
 """
 
+import json
 import logging
 
 from openai import AsyncOpenAI
 
-from agents.providers.base import LLMProvider
+from agents.providers.base import ChatResponse, LLMProvider, ToolCall
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ class OpenAICompatProvider(LLMProvider):
         self.client = AsyncOpenAI(
             base_url=base_url,
             api_key=validated_key or "not-needed",
-            timeout=30.0,
+            timeout=120.0,
         )
 
     async def chat(
@@ -60,6 +61,53 @@ class OpenAICompatProvider(LLMProvider):
             )
             raise
         return response.choices[0].message.content
+
+    async def chat_with_tools(
+        self,
+        messages: list[dict],
+        tools: list[dict],
+        model: str | None = None,
+        temperature: float = 0.3,
+    ) -> ChatResponse:
+        """Send messages with tool definitions (OpenAI function-calling)."""
+        resolved = self.resolve_model(model)
+        try:
+            response = await self.client.chat.completions.create(
+                model=resolved,
+                messages=messages,
+                tools=tools,
+                temperature=temperature,
+            )
+        except Exception as exc:
+            logger.error(
+                "Tool-calling failed for provider '%s' model '%s': %s",
+                self.name, resolved, exc,
+            )
+            raise
+
+        choice = response.choices[0]
+        message = choice.message
+
+        # Extract tool calls if present
+        tool_calls = []
+        if message.tool_calls:
+            for tc in message.tool_calls:
+                try:
+                    args = json.loads(tc.function.arguments)
+                except (json.JSONDecodeError, TypeError):
+                    args = {"raw": tc.function.arguments}
+                tool_calls.append(ToolCall(
+                    id=tc.id,
+                    name=tc.function.name,
+                    arguments=args,
+                ))
+
+        return ChatResponse(
+            text=message.content or "",
+            tool_calls=tool_calls,
+            finish_reason=choice.finish_reason or "stop",
+            raw=response,
+        )
 
     async def health_check(self) -> dict:
         model = self.default_model
