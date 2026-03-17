@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from agents.core.utils import parse_json_response
 from agents.providers.base import LLMProvider
 
 _PROMPT_PATH = Path(__file__).resolve().parent.parent / "prompts" / "source_hunter.md"
@@ -42,18 +43,4 @@ class SourceHunterAgent:
         ]
 
         raw = await self.provider.chat(messages, model=self.model)
-        return _parse_json(raw)
-
-
-def _parse_json(text: str) -> dict:
-    """Best-effort JSON parse, stripping markdown fences if present."""
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        # Remove ```json ... ``` wrapper
-        lines = cleaned.split("\n")
-        lines = [l for l in lines if not l.strip().startswith("```")]
-        cleaned = "\n".join(lines)
-    try:
-        return json.loads(cleaned)
-    except json.JSONDecodeError:
-        return {"raw_response": text, "_parse_error": True}
+        return parse_json_response(raw)

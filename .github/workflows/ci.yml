@@ -112,7 +112,70 @@ jobs:
           DEEPSEEK_API_KEY: "ci-test-key"
 
   # ─────────────────────────────────────────────
-  # Job 6: YAML Config Validation
+  # Job 6: Lint (ruff)
+  # ─────────────────────────────────────────────
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: pip install "ruff>=0.5"
+
+      - name: Lint check
+        run: ruff check .
+
+      - name: Format check
+        run: ruff format --check .
+
+  # ─────────────────────────────────────────────
+  # Job 7: Type Check (mypy)
+  # ─────────────────────────────────────────────
+  typecheck:
+    name: Type Check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install mypy types-PyYAML openai anthropic pyyaml python-dotenv pymupdf
+
+      - name: Run mypy
+        run: mypy agents/ core/ tools/ --ignore-missing-imports
+
+  # ─────────────────────────────────────────────
+  # Job 8: Security Scan (bandit)
+  # ─────────────────────────────────────────────
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install bandit
+        run: pip install bandit
+
+      - name: Run bandit
+        run: bandit -r agents/ core/ scripts/ tools/ -ll
+
+  # ─────────────────────────────────────────────
+  # Job 9: YAML Config Validation
   # ─────────────────────────────────────────────
   yaml-config:
     name: YAML Config Validation
@@ -125,21 +188,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install yaml
-        run: pip install pyyaml
+      - name: Install dependencies
+        run: pip install pyyaml pytest
 
       - name: Validate agents.yaml
-        run: |
-          python3 -c "
-          import yaml, sys
-          with open('agents.yaml') as f:
-              cfg = yaml.safe_load(f)
-          assert 'providers' in cfg, 'Missing providers section'
-          assert 'agents' in cfg, 'Missing agents section'
-          assert 'defaults' in cfg, 'Missing defaults section'
-          print('agents.yaml: OK')
-          for name, agent in cfg['agents'].items():
-              assert 'provider' in agent, 'Agent ' + name + ' missing provider'
-              print('  agent [' + name + ']: OK')
-          sys.exit(0)
-          "
+        run: pytest tests/test_agents_yaml.py -v

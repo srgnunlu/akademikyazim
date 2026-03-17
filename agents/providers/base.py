@@ -1,6 +1,11 @@
 """Abstract base class for LLM providers."""
 
+from __future__ import annotations
+
+import logging
 from abc import ABC, abstractmethod
+
+logger = logging.getLogger(__name__)
 
 
 class LLMProvider(ABC):
@@ -9,6 +14,20 @@ class LLMProvider(ABC):
     def __init__(self, name: str, default_model: str):
         self.name = name
         self.default_model = default_model
+
+    @staticmethod
+    def validate_api_key(
+        api_key: str, provider_name: str, *, allow_empty: bool = False
+    ) -> str:
+        """Validate and return API key. Raises ValueError if empty and not allowed."""
+        if not api_key and not allow_empty:
+            raise ValueError(
+                f"API key required for provider '{provider_name}'. "
+                f"Set the appropriate environment variable in .env"
+            )
+        if not api_key:
+            logger.warning("No API key for provider '%s' — requests may fail", provider_name)
+        return api_key
 
     @abstractmethod
     async def chat(

@@ -129,6 +129,74 @@ class TestPromptFiles:
         assert len(p.read_text()) > 100
 
 
+class TestParseJsonResponse:
+    """Tests for the shared parse_json_response utility."""
+
+    def test_valid_json(self):
+        from agents.core.utils import parse_json_response
+        result = parse_json_response('{"key": "value"}')
+        assert result == {"key": "value"}
+
+    def test_fenced_json(self):
+        from agents.core.utils import parse_json_response
+        text = '```json\n{"key": "value"}\n```'
+        result = parse_json_response(text)
+        assert result == {"key": "value"}
+
+    def test_malformed_json(self):
+        from agents.core.utils import parse_json_response
+        result = parse_json_response("this is not json")
+        assert result["_parse_error"] is True
+        assert "this is not json" in result["raw_response"]
+
+
+class TestErrorPaths:
+    def test_config_unknown_provider(self, monkeypatch):
+        monkeypatch.chdir(REPO_ROOT)
+        monkeypatch.setenv("GEMINI_API_KEY", "fake")
+        monkeypatch.setenv("DEEPSEEK_API_KEY", "fake")
+        from agents.config import AgentConfig
+        cfg = AgentConfig()
+        with pytest.raises(ValueError, match="Unknown provider"):
+            cfg.get_provider("nonexistent_provider")
+
+    def test_config_unknown_agent(self, monkeypatch):
+        monkeypatch.chdir(REPO_ROOT)
+        monkeypatch.setenv("GEMINI_API_KEY", "fake")
+        monkeypatch.setenv("DEEPSEEK_API_KEY", "fake")
+        from agents.config import AgentConfig
+        cfg = AgentConfig()
+        with pytest.raises(ValueError, match="Unknown agent"):
+            cfg.get_agent_provider("nonexistent_agent")
+
+    def test_openai_compat_empty_api_key_remote(self):
+        from agents.providers.openai_compat import OpenAICompatProvider
+        with pytest.raises(ValueError, match="API key required"):
+            OpenAICompatProvider(
+                name="test-remote",
+                base_url="https://api.example.com/v1",
+                api_key="",
+                default_model="test",
+            )
+
+    def test_openai_compat_empty_api_key_local_allowed(self):
+        from agents.providers.openai_compat import OpenAICompatProvider
+        # Local providers (Ollama) should allow empty keys
+        provider = OpenAICompatProvider(
+            name="test-local",
+            base_url="http://localhost:11434/v1",
+            api_key="",
+            default_model="llama3",
+        )
+        assert provider.name == "test-local"
+
+    def test_citation_verifier_missing_pdf(self, monkeypatch):
+        monkeypatch.chdir(REPO_ROOT)
+        from agents.core.citation_verifier import _extract_pdf_text
+        with pytest.raises((FileNotFoundError, RuntimeError)):
+            _extract_pdf_text("/nonexistent/path/fake.pdf")
+
+
 class TestCLI:
     def test_list_providers_cli(self, monkeypatch):
         """--list-providers exits 0 and prints provider table."""

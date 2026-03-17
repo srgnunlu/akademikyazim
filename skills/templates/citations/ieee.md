@@ -7,7 +7,7 @@ description_tr: "IEEE atıf sistemi kılavuzu. Mühendislik, Bilgisayar Bilimler
 tags: [citation, ieee, numbered, formatting, engineering, stem]
 links_to:
   - skills/techniques/citation-formatting.md
-  - skills/templates/disciplines/stem.md
+  - skills/disciplines/stem.md
 language: bilingual
 version: "1.0"
 ---

@@ -4,9 +4,13 @@ Uses the Anthropic SDK (different message format from OpenAI).
 Only needed when users want to call Claude API directly outside Claude Code.
 """
 
+import logging
+
 from anthropic import AsyncAnthropic
 
 from agents.providers.base import LLMProvider
+
+logger = logging.getLogger(__name__)
 
 
 class AnthropicProvider(LLMProvider):
@@ -14,7 +18,8 @@ class AnthropicProvider(LLMProvider):
 
     def __init__(self, name: str, api_key: str, default_model: str):
         super().__init__(name=name, default_model=default_model)
-        self.client = AsyncAnthropic(api_key=api_key)
+        self.validate_api_key(api_key, name, allow_empty=False)
+        self.client = AsyncAnthropic(api_key=api_key, timeout=30.0)
 
     async def chat(
         self,
@@ -42,7 +47,14 @@ class AnthropicProvider(LLMProvider):
         if system_text:
             kwargs["system"] = system_text
 
-        response = await self.client.messages.create(**kwargs)
+        try:
+            response = await self.client.messages.create(**kwargs)
+        except Exception as exc:
+            logger.error(
+                "API call failed for provider '%s' model '%s': %s",
+                self.name, resolved, exc,
+            )
+            raise
         return response.content[0].text
 
     async def health_check(self) -> dict:

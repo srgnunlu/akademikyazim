@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 
 import pymupdf  # PyMuPDF
 
+from agents.core.utils import parse_json_response
 from agents.providers.base import LLMProvider
+
+logger = logging.getLogger(__name__)
 
 _PROMPT_PATH = Path(__file__).resolve().parent.parent / "prompts" / "citation_verifier.md"
 
@@ -52,12 +56,17 @@ class CitationVerifierAgent:
         ]
 
         raw = await self.provider.chat(messages, model=self.model)
-        return _parse_json(raw)
+        return parse_json_response(raw)
 
 
 def _extract_pdf_text(pdf_path: str, max_chars: int = 50_000) -> str:
     """Extract text from PDF using PyMuPDF. Truncates to max_chars."""
-    doc = pymupdf.open(pdf_path)
+    try:
+        doc = pymupdf.open(pdf_path)
+    except (FileNotFoundError, RuntimeError, PermissionError) as exc:
+        logger.error("Cannot open PDF %s: %s", pdf_path, exc)
+        raise
+
     pages = []
     total = 0
     for page in doc:
@@ -69,15 +78,3 @@ def _extract_pdf_text(pdf_path: str, max_chars: int = 50_000) -> str:
     doc.close()
     combined = "\n".join(pages)
     return combined[:max_chars]
-
-
-def _parse_json(text: str) -> dict:
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        lines = cleaned.split("\n")
-        lines = [l for l in lines if not l.strip().startswith("```")]
-        cleaned = "\n".join(lines)
-    try:
-        return json.loads(cleaned)
-    except json.JSONDecodeError:
-        return {"raw_response": text, "_parse_error": True}

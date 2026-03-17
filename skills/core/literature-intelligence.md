@@ -1,3 +1,11 @@
+---
+title: "Literatür Zekası Katmanı / Literature Intelligence Layer"
+node_type: core
+description: "Automatic source correlation, contradiction warnings, and argument matching during writing phases."
+tags: [literature, intelligence, writing-phase]
+language: bilingual
+---
+
 # Literatür Zekası Katmanı / Literature Intelligence Layer
 
 ## Amaç
