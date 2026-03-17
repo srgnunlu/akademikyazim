@@ -66,7 +66,7 @@ version: "1.0"
 ## 5. Bluebook (US Law) / OSCOLA (UK Law) / Hukuk (TR)
 
 **Core Logic:** Deeply specialized rules prioritizing the hierarchy of legal authority (Statutes > Cases > Secondary Sources).
-*For detailed legal citation rules, including Turkish legal conventions (Yargıtay/AYM), the AI MUST load the specific discipline module:* `skills/templates/disciplines/hukuk.md`.
+*For detailed legal citation rules, including Turkish legal conventions (Yargıtay/AYM), the AI MUST load the specific discipline module:* `skills/disciplines/law.md`.
 
 ---
 

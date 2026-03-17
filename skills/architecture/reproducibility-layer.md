@@ -7,7 +7,7 @@ description: "Documents every methodological decision, software version, and dat
 description_tr: "Otomatik olarak bir yöntemler eki ve bir replikasyon paketi oluşturmak için her metodolojik kararı, yazılım sürümünü ve veri temizleme adımını belgeler."
 tags: [architecture, reproducibility, open-science, fair-principles, data-management]
 links_to:
-  - skills/templates/disciplines/stem.md
+  - skills/disciplines/stem.md
   - skills/core/iron-rules.md
 language: bilingual
 version: "1.0"

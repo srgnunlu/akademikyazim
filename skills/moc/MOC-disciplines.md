@@ -7,14 +7,14 @@ description: "Navigation hub for 8 discipline-specific modules. Load exactly one
 description_tr: "8 disipline özgü modül için navigasyon merkezi. Proje başlangıcında öğrencinin alanına göre tam olarak bir disiplin node'u yükle. Her modül metodoloji, kaynak hiyerarşisi, varsayılan atıf sistemi ve tez yapısını tanımlar."
 tags: [moc, disciplines, navigation, methodology, citation-default]
 cluster_nodes:
-  - templates/disciplines/hukuk.md
-  - templates/disciplines/sosyal-bilimler.md
-  - templates/disciplines/muhendislik.md
-  - templates/disciplines/fen-bilimleri.md
-  - templates/disciplines/tip.md
-  - templates/disciplines/isletme.md
-  - templates/disciplines/egitim.md
-  - templates/disciplines/beseri-bilimler.md
+  - disciplines/hukuk.md
+  - disciplines/sosyal-bilimler.md
+  - disciplines/muhendislik.md
+  - disciplines/fen-bilimleri.md
+  - disciplines/tip.md
+  - disciplines/isletme.md
+  - disciplines/egitim.md
+  - disciplines/beseri-bilimler.md
 used_by:
   - skills/INDEX.md
   - skills/phases/phase-0-identity.md

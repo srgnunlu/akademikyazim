@@ -8,13 +8,34 @@ node_type: index
 Root entry point. Follow links to the relevant cluster.
 
 ## Slash Commands
+
+### Core
 - `/tezatlas` — Start or resume a session
+- `/import` — Import existing academic work (mid-project entry)
 - `/status` — Read-only project status check
+- `/review-draft <file>` — 4-layer draft review: argument integrity, source anchoring, style, literature alignment
+- `/ai-review` — Trigger AI Peer Review at any time (phase gate, section, argument, or saturation)
+
+### Literature Intelligence
+- `/intake` — Source map: cluster sources, extract core claims, flag contradictions → SOURCE_MAP.md
+- `/contradictions` — Enhanced cross-source contradiction scanner → CONTRADICTIONS.md
+- `/citation-chain` — Intellectual lineage: who started → challenged → developed → consensus → CITATION_CHAIN.md
+- `/gaps` — Research gap scanner: unanswered questions, coverage gaps → GAPS.md
+- `/method-audit` — Methodology audit across sources + user's own method
+- `/assumptions` — Untested assumption finder with risk analysis → ASSUMPTIONS.md
+- `/knowledge-map` — Field structure: pillars + contentions + boundaries → KNOWLEDGE_MAP.md
+- `/so-what` — "So What?" test: 3 essential statements → SO_WHAT.md
+- `/synthesize` — Multi-source synthesis by argument → SYNTHESIS.md
+
+### Output & Submission
+- `/latex` — Convert Markdown drafts to LaTeX (.tex)
+- `/compile-pdf` — Compile LaTeX to PDF via latexmk (with word count)
+- `/submission-check` — Pre-submission checklist (word count, citations, structure, blind review)
+
+### Other
 - `/devil-advocate` — Challenge your claim/argument from 4 angles before writing
-- `/review-draft <file>` — 3-layer draft review: argument integrity, source anchoring, style
 - `/citation-check "<claim>" <source.pdf>` — Verify a specific claim against a source (Iron Rule 4)
 - `/generate-citations` — Extract DOIs from PDFs → CrossRef/OpenAlex → BibTeX/RIS
-- `/synthesize` — Multi-source synthesis: map notes → arguments → SYNTHESIS.md
 - `/career-profile` — Research career dashboard + skill gap analysis
 - `/install-plugin <path>` — Validate and install a community plugin
 
@@ -94,10 +115,12 @@ Root entry point. Follow links to the relevant cluster.
 
 ## Discipline Modules
 - [[disciplines/law]] — Law / Legal Studies (TR + comparative, citation, methodology)
-- [[templates/disciplines/medicine]] — Medicine & Health Sciences (EQUATOR, IRB, Vancouver)
-- [[templates/disciplines/stem]] — STEM & Engineering (LaTeX, IEEE, Reproducibility)
-- [[templates/disciplines/social-sciences]] — Social Sciences (APA 7, Qualitative, Survey Design)
-- [[templates/disciplines/humanities]] — Humanities (Chicago 17/MLA 9, Archival, Close Reading)
+- [[disciplines/medicine]] — Medicine & Health Sciences (EQUATOR, IRB, Vancouver)
+- [[disciplines/stem]] — STEM & Engineering (LaTeX, IEEE, Reproducibility)
+- [[disciplines/social-sciences]] — Social Sciences (APA 7, Qualitative, Survey Design)
+- [[disciplines/humanities]] — Humanities (Chicago 17/MLA 9, Archival, Close Reading)
+- [[disciplines/egitim]] — Eğitim Bilimleri (Education)
+- [[disciplines/isletme]] — İşletme (Business Administration)
 
 ## Tooling & UX
 - [[tooling/annas-archive]] — Source download

@@ -5,11 +5,14 @@ Reads agents.yaml + .env, instantiates the correct LLMProvider per agent.
 
 from __future__ import annotations
 
+import logging
 import os
 from pathlib import Path
 
 import yaml
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 from agents.providers.base import LLMProvider
 from agents.providers.openai_compat import OpenAICompatProvider
@@ -95,9 +98,13 @@ class AgentConfig:
 
         try:
             provider = self.get_provider(provider_name)
-        except (ValueError, Exception):
+        except (ValueError, KeyError):
             fallback = self.defaults.get("fallback_provider")
             if fallback and fallback != provider_name:
+                logger.warning(
+                    "Provider '%s' unavailable for agent '%s', falling back to '%s'",
+                    provider_name, agent_name, fallback,
+                )
                 provider = self.get_provider(fallback)
                 model_override = None  # reset model when falling back
             else:

@@ -1,3 +1,11 @@
+---
+title: "Bölüm Bazlı Altyapı / Section Infrastructure"
+node_type: core
+description: "Section-specific tool sets and quality checks for each academic section type."
+tags: [sections, quality-control, writing-phase]
+language: bilingual
+---
+
 # Bölüm Bazlı Altyapı / Section Infrastructure
 
 ## Amaç

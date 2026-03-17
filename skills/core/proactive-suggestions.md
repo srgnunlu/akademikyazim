@@ -1,3 +1,11 @@
+---
+title: "Proactive Command Suggestions"
+node_type: core
+description: "Rules for when and how Claude should proactively suggest slash commands to the user."
+tags: [ux, commands, proactive]
+language: en
+---
+
 # Proactive Command Suggestions
 
 ## When to Suggest Commands

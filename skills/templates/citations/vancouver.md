@@ -7,7 +7,7 @@ description_tr: "Vancouver atıf sistemi kılavuzu. Tıp ve Sağlık Bilimlerind
 tags: [citation, vancouver, medicine, health-sciences, numbered]
 links_to:
   - skills/techniques/citation-formatting.md
-  - skills/templates/disciplines/medicine.md
+  - skills/disciplines/medicine.md
 language: bilingual
 version: "1.0"
 ---
