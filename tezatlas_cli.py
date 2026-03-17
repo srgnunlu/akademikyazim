@@ -146,6 +146,21 @@ COMMANDS = {
         "help": "Research question drift detection",
         "pass_project_dir": True,
     },
+
+    # AI Agent Pipeline
+    "pipeline": {
+        "script": None,
+        "agent_cli": True,
+        "help": "Run full Idea → Article pipeline (advanced multi-agent)",
+        "pass_project_dir": False,
+    },
+    "refine-rq": {
+        "script": None,
+        "agent_cli": True,
+        "agent_command": "rq_refiner",
+        "help": "Refine a research idea into structured research questions",
+        "pass_project_dir": False,
+    },
 }
 
 
@@ -154,6 +169,18 @@ COMMANDS = {
 def run_command(cmd_name: str, cmd_info: dict, extra_args: list[str],
                 project_dir: Path) -> int:
     """Run a TezAtlas command script."""
+    # Agent CLI commands (pipeline, refine-rq)
+    if cmd_info.get("agent_cli"):
+        agent_script = _ROOT / "agents" / "run.py"
+        agent_cmd = cmd_info.get("agent_command", cmd_name)
+        cmd = [sys.executable, str(agent_script), agent_cmd] + extra_args
+        try:
+            result = subprocess.run(cmd, cwd=str(_ROOT))
+            return result.returncode
+        except KeyboardInterrupt:
+            print("\nInterrupted.")
+            return 130
+
     if cmd_info.get("tool"):
         script_path = _ROOT / "tools" / cmd_info["tool"]
     else:
@@ -237,6 +264,7 @@ def _print_command_list() -> None:
                                      "assumptions", "knowledge-map", "so-what", "synthesize"],
         "SOURCE MANAGEMENT": ["find-source", "reading", "snowball", "saturation"],
         "WRITING & REVIEW": ["style-lint", "bibtex", "rq-drift"],
+        "AI AGENT PIPELINE": ["pipeline", "refine-rq"],
     }
 
     for cat_name, cmd_names in categories.items():

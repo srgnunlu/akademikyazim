@@ -70,6 +70,9 @@ node_modules/
 # Logs
 *.log
 
+# Agent memory (session-specific, not framework)
+.tezatlas/
+
 # Local validation / scratch
 _demo_project/
 
